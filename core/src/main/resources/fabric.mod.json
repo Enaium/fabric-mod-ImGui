@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-gui-imgui",
+  "version": "${version}",
+  "name": "fabric-gui-imgui",
+  "description": "Fabric gui module for ImGui!",
+  "authors": [
+    "Enaium"
+  ],
+  "contact": {
+    "homepage": "https://github.com/Enaium/fabric-mod-ImGui",
+    "sources": "https://github.com/Enaium/fabric-mod-ImGui",
+    "issues": "https://github.com/Enaium/fabric-mod-ImGui/issues"
+  },
+  "license": "MIT",
+  "icon": "assets/fabric-gui-imgui/icon.png",
+  "environment": "*",
+  "mixins": [
+    "fabric-gui-imgui.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": "*",
+    "minecraft": "${minecraft_version}",
+    "java": ">=${java_version}"
+  },
+  "suggests": {
+    "flamingo": "*"
+  }
+}

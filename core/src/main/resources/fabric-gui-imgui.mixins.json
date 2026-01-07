@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "cn.enaium.fabric.imgui.mixin",
+  "compatibilityLevel": "JAVA_${java_version}",
+  "mixins": ${
+  mixin_list
+},
+"injectors": {
+"defaultRequire": 1
+}
+}

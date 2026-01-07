@@ -1,0 +1,3 @@
+plugins {
+    `modern-fabric`
+}
