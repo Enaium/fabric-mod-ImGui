@@ -51,6 +51,8 @@ public abstract class ImGuiService {
     public abstract void init(final long handle);
 
     public void configure(final ImGuiIO data) {
+        data.getFonts().addFontDefault();
+        data.getFonts().build();
         data.setIniFilename(id + ".ini");
         data.setConfigFlags(ImGuiConfigFlags.DockingEnable);
     }
