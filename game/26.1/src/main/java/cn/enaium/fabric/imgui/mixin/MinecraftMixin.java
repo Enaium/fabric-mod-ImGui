@@ -26,7 +26,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import static cn.enaium.fabric.imgui.FabricImGui.imgui;
+import static cn.enaium.fabric.imgui.FabricImGui.IMGUI;
 
 /**
  * @author Enaium
@@ -39,11 +39,11 @@ public class MinecraftMixin {
 
     @Inject(method = "<init>", at = @At("RETURN"))
     public void initImGui(GameConfig gameConfig, CallbackInfo ci) {
-        imgui.create(window.handle());
+        IMGUI.create(window.handle());
     }
 
     @Inject(method = "close", at = @At("HEAD"))
     public void closeImGui(CallbackInfo ci) {
-        imgui.dispose();
+        IMGUI.dispose();
     }
 }

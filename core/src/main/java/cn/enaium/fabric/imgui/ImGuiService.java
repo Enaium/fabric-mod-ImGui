@@ -27,6 +27,10 @@ import imgui.flag.ImGuiConfigFlags;
 public abstract class ImGuiService {
     private final String id;
 
+    public ImGuiService() {
+        this(null);
+    }
+
     /**
      * @param id mod id
      */
@@ -53,7 +57,11 @@ public abstract class ImGuiService {
     public void configure(final ImGuiIO data) {
         data.getFonts().addFontDefault();
         data.getFonts().build();
-        data.setIniFilename(id + ".ini");
+        if (id != null) {
+            data.setIniFilename(id + ".ini");
+        } else {
+            data.setIniFilename(null);
+        }
         data.setConfigFlags(ImGuiConfigFlags.DockingEnable);
     }
 

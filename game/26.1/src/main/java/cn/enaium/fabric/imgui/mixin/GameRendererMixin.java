@@ -27,7 +27,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import static cn.enaium.fabric.imgui.FabricImGui.imgui;
+import static cn.enaium.fabric.imgui.FabricImGui.IMGUI;
 
 /**
  * @author Enaium
@@ -41,7 +41,7 @@ public class GameRendererMixin {
     @Inject(method = "render", at = @At("RETURN"))
     private void render(DeltaTracker deltaTracker, boolean renderLevel, CallbackInfo ci) {
         if (minecraft.screen instanceof final ImGuiRenderable renderable) {
-            imgui.draw(renderable);
+            IMGUI.draw(renderable);
         }
     }
 }

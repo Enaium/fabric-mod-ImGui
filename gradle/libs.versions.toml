@@ -1,7 +1,7 @@
 [versions]
 loom = "1.15-SNAPSHOT"
 publish = "0.8.4"
-fmg = "0.0.4"
+fmg = "0.0.5"
 imgui = "1.90.0"
 maven = "0.35.0"
 

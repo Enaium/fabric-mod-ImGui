@@ -16,11 +16,27 @@
 
 package cn.enaium.fabric.imgui;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.Iterator;
 import java.util.ServiceLoader;
 
 /**
  * @author Enaium
  */
 public class FabricImGui {
-    public static final ImGuiService imgui = ServiceLoader.load(ImGuiService.class).iterator().next();
+    public static final ImGuiService IMGUI;
+
+    static {
+        final Iterator<ImGuiService> iterator = ServiceLoader.load(ImGuiService.class).iterator();
+        if (iterator.hasNext()) {
+            IMGUI = iterator.next();
+        } else {
+            try {
+                IMGUI = (ImGuiService) Class.forName("cn.enaium.fabric.imgui.DefaultImGui").getConstructor(String.class).newInstance((Object) null);
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                     NoSuchMethodException | ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 }

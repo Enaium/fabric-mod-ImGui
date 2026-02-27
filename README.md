@@ -42,7 +42,9 @@ Download from:
 
 ## Quick Start
 
-* First, create a class that extends `DefaultImGui`:
+###  If you want to load or save .ini
+
+* Create a class that extends `DefaultImGui`:
 
 ```java
 public class ExampleImGui extends DefaultImGui {
@@ -59,26 +61,37 @@ public class ExampleImGui extends DefaultImGui {
 com.example.ExampleImGui
 ```
 
-* Finally, create a screen that implements `ImGuiRenderable` to define your ImGui interface:
+### If you want to render ImGui in a screen
+
+* Create a screen that implements `ImGuiRenderable` to define your ImGui interface:
 
 ```java
 public final class ExampleScreen extends Screen implements ImGuiRenderable {
-
-    private static final ImBoolean showDemoWindow = new ImBoolean(false);
-
     public ExampleScreen() {
         super(Text.literal("Example Screen"));
     }
 
     @Override
     public void render(ImGuiIO io) {
-        if (ImGui.begin("Hello, ImGui!")) {
-            ImGui.setWindowSize(800, 600);
-            ImGui.checkbox("Show Demo Window", showDemoWindow);
-            ImGui.end();
-        }
+      if (ImGui.begin("fabric-gui-imgui")) {
+          ImGui.text("Enaium!");
+          ImGui.end();
+      }
+    }
+}
+```
 
-        ImGui.showDemoWindow(showDemoWindow);
+### If you do not want to render ImGui in a screen
+
+```java
+public final class Example {
+    public render() {
+        IMGUI.draw((io) -> {
+            if (ImGui.begin("fabric-gui-imgui")) {
+                ImGui.text("Enaium!");
+                ImGui.end();
+            }
+        });
     }
 }
 ```
@@ -89,6 +102,11 @@ This library supports multiple Minecraft versions with corresponding ImGui versi
 
 | Minecraft | ImGui   |
 |-----------|---------|
+| 1.8.9     | 1.86.12 |
+| 1.9.4     | 1.86.12 |
+| 1.10.2    | 1.86.12 |
+| 1.11.2    | 1.86.12 |
+| 1.12.2    | 1.86.12 |
 | 1.14.4    | 1.86.12 |
 | 1.15.2    | 1.86.12 |
 | 1.16.5    | 1.86.12 |
