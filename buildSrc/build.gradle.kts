@@ -24,4 +24,5 @@ dependencies {
     api(libs.legacy.looming)
     api(libs.publish)
     api(libs.maven)
+    api(libs.fmg)
 }

@@ -20,6 +20,8 @@ import com.mojang.blaze3d.opengl.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import imgui.ImGui;
 import imgui.flag.ImGuiConfigFlags;
+import imgui.gl3.ImGuiImplGl3;
+import imgui.glfw.ImGuiImplGlfw;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.gl.GlBackend;
@@ -33,6 +35,9 @@ import org.lwjgl.opengl.GL30C;
  * @author Enaium
  */
 public class DefaultImGui extends ImGuiService {
+    public final ImGuiImplGlfw imGuiImplGlfw = new ImGuiImplGlfw();
+    public final ImGuiImplGl3 imGuiImplGl3 = new ImGuiImplGl3();
+
     /**
      * @param id mod id
      */
@@ -70,5 +75,12 @@ public class DefaultImGui extends ImGuiService {
 
             GLFW.glfwMakeContextCurrent(pointer);
         }
+    }
+
+    @Override
+    public void dispose() {
+        imGuiImplGl3.shutdown();
+        imGuiImplGlfw.shutdown();
+        super.dispose();
     }
 }

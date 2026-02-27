@@ -5,7 +5,6 @@ plugins {
 
 dependencies {
     implementation(libs.imgui.java.binding)
-    implementation(libs.imgui.java.lwjgl3)
     implementation(libs.imgui.java.natives.windows)
     implementation(libs.imgui.java.natives.linux)
     implementation(libs.imgui.java.natives.macos)

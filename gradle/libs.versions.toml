@@ -1,6 +1,7 @@
 [versions]
-loom = "1.14-SNAPSHOT"
+loom = "1.15-SNAPSHOT"
 publish = "0.8.4"
+fmg = "0.0.4"
 imgui = "1.90.0"
 maven = "0.35.0"
 
@@ -9,6 +10,7 @@ loom = { module = "net.fabricmc:fabric-loom", version.ref = "loom" }
 legacy-looming = { module = "net.legacyfabric:legacy-looming", version.ref = "loom" }
 publish = { module = "me.modmuss50.mod-publish-plugin:me.modmuss50.mod-publish-plugin.gradle.plugin", version.ref = "publish" }
 maven = { module = "com.vanniktech:gradle-maven-publish-plugin", version.ref = "maven" }
+fmg = { module = "cn.enaium.fabric-multi-game:cn.enaium.fabric-multi-game.gradle.plugin", version.ref = "fmg" }
 imgui-java-binding = { module = "io.github.spair:imgui-java-binding", version.ref = "imgui" }
 imgui-java-lwjgl3 = { module = "io.github.spair:imgui-java-lwjgl3", version.ref = "imgui" }
 imgui-java-natives-windows = { module = "io.github.spair:imgui-java-natives-windows", version.ref = "imgui" }

@@ -20,16 +20,11 @@ import imgui.ImGui;
 import imgui.ImGuiIO;
 import imgui.extension.implot.ImPlot;
 import imgui.flag.ImGuiConfigFlags;
-import imgui.gl3.ImGuiImplGl3;
-import imgui.glfw.ImGuiImplGlfw;
 
 /**
  * @author Enaium
  */
 public abstract class ImGuiService {
-    public final ImGuiImplGlfw imGuiImplGlfw = new ImGuiImplGlfw();
-    public final ImGuiImplGl3 imGuiImplGl3 = new ImGuiImplGl3();
-
     private final String id;
 
     /**
@@ -66,9 +61,6 @@ public abstract class ImGuiService {
      * Dispose context
      */
     public void dispose() {
-        imGuiImplGl3.shutdown();
-        imGuiImplGlfw.shutdown();
-
         ImPlot.destroyContext();
         ImGui.destroyContext();
     }

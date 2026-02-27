@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "fabric-gui-imgui",
-  "version": "${version}",
+  "version": "@version@",
   "name": "fabric-gui-imgui",
   "description": "Fabric gui module for ImGui!",
   "authors": [
@@ -20,8 +20,8 @@
   ],
   "depends": {
     "fabricloader": "*",
-    "minecraft": "${minecraft_version}",
-    "java": ">=${java_version}"
+    "minecraft": "@minecraft_version@",
+    "java": ">=@java_version@"
   },
   "suggests": {
     "flamingo": "*"
