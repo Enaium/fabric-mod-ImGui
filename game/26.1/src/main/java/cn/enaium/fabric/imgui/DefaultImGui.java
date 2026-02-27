@@ -1,0 +1,91 @@
+/*
+ * Copyright 2026 Enaium
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package cn.enaium.fabric.imgui;
+
+import cn.enaium.fabric.imgui.mixin.GlDeviceMixin;
+import cn.enaium.fabric.imgui.mixin.GpuDeviceMixin;
+import com.mojang.blaze3d.opengl.DirectStateAccess;
+import com.mojang.blaze3d.opengl.GlStateManager;
+import com.mojang.blaze3d.opengl.GlTexture;
+import com.mojang.blaze3d.pipeline.RenderTarget;
+import com.mojang.blaze3d.systems.GpuDeviceBackend;
+import com.mojang.blaze3d.systems.RenderSystem;
+import imgui.ImGui;
+import imgui.flag.ImGuiConfigFlags;
+import imgui.gl3.ImGuiImplGl3;
+import imgui.glfw.ImGuiImplGlfw;
+import net.minecraft.client.Minecraft;
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.opengl.GL11C;
+import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL30C;
+
+/**
+ * @author Enaium
+ */
+public class DefaultImGui extends ImGuiService {
+    public final ImGuiImplGlfw imGuiImplGlfw = new ImGuiImplGlfw();
+    public final ImGuiImplGl3 imGuiImplGl3 = new ImGuiImplGl3();
+
+    /**
+     * @param id mod id
+     */
+    public DefaultImGui(String id) {
+        super(id);
+    }
+
+    @Override
+    public void init(final long handle) {
+        imGuiImplGlfw.init(handle, true);
+        imGuiImplGl3.init();
+    }
+
+    @Override
+    public void draw(ImGuiRenderable renderable) {
+        final RenderTarget framebuffer = Minecraft.getInstance().getMainRenderTarget();
+        final GpuDeviceBackend backend = ((GpuDeviceMixin) RenderSystem.getDevice()).getBackend();
+        final DirectStateAccess directStateAccess = ((GlDeviceMixin) backend).getDirectStateAccess();
+        GlStateManager._glBindFramebuffer(GL30C.GL_FRAMEBUFFER, ((GlTexture) framebuffer.getColorTexture()).getFbo(directStateAccess, null));
+        GL11C.glViewport(0, 0, framebuffer.width, framebuffer.height);
+
+        imGuiImplGl3.newFrame();
+        imGuiImplGlfw.newFrame(); // Handle keyboard and mouse interactions
+        ImGui.newFrame();
+
+        renderable.render(ImGui.getIO());
+
+        ImGui.render();
+        imGuiImplGl3.renderDrawData(ImGui.getDrawData());
+
+        GlStateManager._glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
+
+        if (ImGui.getIO().hasConfigFlags(ImGuiConfigFlags.ViewportsEnable)) {
+            final long pointer = GLFW.glfwGetCurrentContext();
+            ImGui.updatePlatformWindows();
+            ImGui.renderPlatformWindowsDefault();
+
+            GLFW.glfwMakeContextCurrent(pointer);
+        }
+    }
+
+    @Override
+    public void dispose() {
+        imGuiImplGl3.shutdown();
+        imGuiImplGlfw.shutdown();
+        super.dispose();
+    }
+}

@@ -4,20 +4,24 @@
 [![CurseForge Downloads](https://img.shields.io/curseforge/dt/1423038?style=flat-square&logo=curseforge)](https://www.curseforge.com/minecraft/mc-mods/fabric-gui-imgui)
 [![Modrinth Downloads](https://img.shields.io/modrinth/dt/M78HuV3L?style=flat-square&logo=modrinth)](https://modrinth.com/mod/fabric-gui-imgui)
 
-A powerful Fabric mod library that brings the modern ImGui interface framework to Minecraft, enabling developers to create beautiful, responsive UIs with minimal code.
+A powerful Fabric mod library that brings the modern ImGui interface framework to Minecraft, enabling developers to
+create beautiful, responsive UIs with minimal code.
 
-> **⚠️ This is a dependency mod** — it doesn't add content to the game itself. Other mods use this library to provide enhanced user interfaces. For players: install this if a mod you're using requires it.
+> **⚠️ This is a dependency mod** — it doesn't add content to the game itself. Other mods use this library to provide
+> enhanced user interfaces. For players: install this if a mod you're using requires it.
 
 ## Overview
 
-Fabric GUI ImGui provides seamless integration between Minecraft and the Dear ImGui framework, allowing mod developers to:
+Fabric GUI ImGui provides seamless integration between Minecraft and the Dear ImGui framework, allowing mod developers
+to:
 
 - Create modern, professional-looking UI panels and windows
 - Leverage ImGui's powerful immediate-mode GUI paradigm
 - Build complex interfaces with minimal boilerplate code
 - Maintain version compatibility across multiple Minecraft versions
 
-The library is **version-agnostic** and only requires Fabric Loader, making it easy to use across different Minecraft releases.
+The library is **version-agnostic** and only requires Fabric Loader, making it easy to use across different Minecraft
+releases.
 
 ## Installation
 
@@ -32,6 +36,7 @@ modImplementation("cn.enaium:fabric-gui-imgui:1.21.11-1.0.0+imgui.1.90.0")
 ### For Players
 
 Download from:
+
 - [CurseForge](https://www.curseforge.com/minecraft/mc-mods/fabric-gui-imgui)
 - [Modrinth](https://modrinth.com/mod/fabric-gui-imgui)
 
@@ -47,7 +52,8 @@ public class ExampleImGui extends DefaultImGui {
 }
 ```
 
-* Next, create a file named `cn.enaium.fabric.imgui.ImGuiService` in the `resources/META-INF/services/` directory containing the fully qualified name of your class:
+* Next, create a file named `cn.enaium.fabric.imgui.ImGuiService` in the `resources/META-INF/services/` directory
+  containing the fully qualified name of your class:
 
 ```
 com.example.ExampleImGui
@@ -91,3 +97,4 @@ This library supports multiple Minecraft versions with corresponding ImGui versi
 | 1.19.4    | 1.90.0 |
 | 1.20.6    | 1.90.0 |
 | 1.21.11   | 1.90.0 |
+| 26.1      | 1.90.0 |
