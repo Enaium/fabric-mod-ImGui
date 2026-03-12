@@ -20,16 +20,16 @@ subprojects {
     version = "$minecraftVersion-${rootProject.version}+imgui.$imguiVersion"
 
     dependencies {
-        add("include", add("implementation", "io.github.spair:imgui-java-binding:$imguiVersion")!!)
-        add("include", add("implementation", "io.github.spair:imgui-java-lwjgl3:$imguiVersion") {
+        add("include", add("api", "io.github.spair:imgui-java-binding:$imguiVersion")!!)
+        add("include", add("api", "io.github.spair:imgui-java-lwjgl3:$imguiVersion") {
             exclude(group = "org.lwjgl")
         })
-        add("include", add("implementation", "io.github.spair:imgui-java-natives-windows:$imguiVersion")!!)
-        add("include", add("implementation", "io.github.spair:imgui-java-natives-linux:$imguiVersion")!!)
-        add("include", add("implementation", "io.github.spair:imgui-java-natives-macos:$imguiVersion")!!)
+        add("include", add("api", "io.github.spair:imgui-java-natives-windows:$imguiVersion")!!)
+        add("include", add("api", "io.github.spair:imgui-java-natives-linux:$imguiVersion")!!)
+        add("include", add("api", "io.github.spair:imgui-java-natives-macos:$imguiVersion")!!)
 
         if (VersionNumber.parse(minecraftVersion.toString()) < VersionNumber.parse("1.14")) {
-            add("include", add("implementation", "com.github.loutreisalive:ImGui-LWJGL2:salam")!!)
+            add("include", add("api", "com.github.loutreisalive:ImGui-LWJGL2:salam")!!)
         }
     }
 }
