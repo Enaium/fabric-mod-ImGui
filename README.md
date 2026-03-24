@@ -30,7 +30,13 @@ releases.
 Add this dependency to your `build.gradle.kts`:
 
 ```kotlin
-modImplementation("cn.enaium:fabric-gui-imgui:1.21.11-1.0.0+imgui.1.90.0")
+modImplementation("cn.enaium:fabric-gui-imgui:<version>")
+```
+
+26.1+:
+
+```kotlin
+implementation("cn.enaium:fabric-gui-imgui:<version>")
 ```
 
 ### For Players
