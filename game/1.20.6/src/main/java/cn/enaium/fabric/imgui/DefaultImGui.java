@@ -44,6 +44,7 @@ public class DefaultImGui extends ImGuiService {
 
     @Override
     public void draw(ImGuiRenderable renderable) {
+        imGuiImplGl3.newFrame();
         imGuiImplGlfw.newFrame(); // Handle keyboard and mouse interactions
         ImGui.newFrame();
         renderable.render(ImGui.getIO());

@@ -8,6 +8,8 @@ fmg {
     common.set(project(":core"))
 }
 
+val imguiVersion = libs.versions.imgui.get()
+
 subprojects {
     apply(plugin = "mod-publish")
 
@@ -15,7 +17,7 @@ subprojects {
         maven("https://jitpack.io")
     }
 
-    val imguiVersion = property("imgui.version")
+
     val minecraftVersion = property("minecraft.version")
     version = "$minecraftVersion-${rootProject.version}+imgui.$imguiVersion"
 
@@ -29,7 +31,7 @@ subprojects {
         add("include", add("api", "io.github.spair:imgui-java-natives-macos:$imguiVersion")!!)
 
         if (VersionNumber.parse(minecraftVersion.toString()) < VersionNumber.parse("1.14")) {
-            add("include", add("api", "com.github.loutreisalive:ImGui-LWJGL2:salam")!!)
+            add("include", add("api", "com.github.Enaium:ImGui-LWJGL2:9586e2a43d")!!)
         }
     }
 }

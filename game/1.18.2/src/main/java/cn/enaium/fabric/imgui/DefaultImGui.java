@@ -16,6 +16,7 @@
 
 package cn.enaium.fabric.imgui;
 
+import cn.enaium.fabric.imgui.lwjgl.MyImGuiImplGlfw;
 import imgui.ImGui;
 import imgui.flag.ImGuiConfigFlags;
 import imgui.gl3.ImGuiImplGl3;
@@ -26,7 +27,7 @@ import org.lwjgl.glfw.GLFW;
  * @author Enaium
  */
 public class DefaultImGui extends ImGuiService {
-    public final ImGuiImplGlfw imGuiImplGlfw = new ImGuiImplGlfw();
+    public final ImGuiImplGlfw imGuiImplGlfw = new MyImGuiImplGlfw();
     public final ImGuiImplGl3 imGuiImplGl3 = new ImGuiImplGl3();
 
     /**
@@ -44,6 +45,7 @@ public class DefaultImGui extends ImGuiService {
 
     @Override
     public void draw(ImGuiRenderable renderable) {
+        imGuiImplGl3.newFrame();
         imGuiImplGlfw.newFrame(); // Handle keyboard and mouse interactions
         ImGui.newFrame();
         renderable.render(ImGui.getIO());
@@ -61,8 +63,8 @@ public class DefaultImGui extends ImGuiService {
 
     @Override
     public void dispose() {
-        imGuiImplGl3.dispose();
-        imGuiImplGlfw.dispose();
+        imGuiImplGl3.shutdown();
+        imGuiImplGlfw.shutdown();
         super.dispose();
     }
 }

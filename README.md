@@ -95,24 +95,3 @@ public final class Example {
     }
 }
 ```
-
-## Version Compatibility
-
-This library supports multiple Minecraft versions with corresponding ImGui versions:
-
-| Minecraft | ImGui   |
-|-----------|---------|
-| 1.8.9     | 1.86.12 |
-| 1.9.4     | 1.86.12 |
-| 1.10.2    | 1.86.12 |
-| 1.11.2    | 1.86.12 |
-| 1.12.2    | 1.86.12 |
-| 1.14.4    | 1.86.12 |
-| 1.15.2    | 1.86.12 |
-| 1.16.5    | 1.86.12 |
-| 1.17.1    | 1.86.12 |
-| 1.18.2    | 1.86.12 |
-| 1.19.4    | 1.90.0  |
-| 1.20.6    | 1.90.0  |
-| 1.21.11   | 1.90.0  |
-| 26.1      | 1.90.0  |

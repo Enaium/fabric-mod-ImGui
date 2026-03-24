@@ -16,7 +16,9 @@
 
 package cn.enaium.fabric.imgui.mixin;
 
+import cn.enaium.fabric.imgui.DefaultImGui;
 import net.minecraft.client.MinecraftClient;
+import org.lwjgl.input.Keyboard;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -37,5 +39,13 @@ public class MinecraftClientMixin {
     @Inject(method = "stop", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sound/SoundManager;close()V"))
     public void closeImGui(CallbackInfo ci) {
         IMGUI.dispose();
+    }
+
+
+    @Inject(method = "tick", at = @At(value = "HEAD"))
+    public void getEventKeyState(CallbackInfo ci) {
+        while (Keyboard.next()) {
+            DefaultImGui.imGuiDisplay.onKey();
+        }
     }
 }
