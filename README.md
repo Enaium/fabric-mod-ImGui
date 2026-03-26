@@ -39,6 +39,14 @@ modImplementation("cn.enaium:fabric-gui-imgui:<version>")
 implementation("cn.enaium:fabric-gui-imgui:<version>")
 ```
 
+1.12.2-:
+
+```kotlin
+repositories {
+    maven("https://jitpack.io")
+}
+```
+
 ### For Players
 
 Download from:
