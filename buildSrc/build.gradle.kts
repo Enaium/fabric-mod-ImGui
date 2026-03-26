@@ -19,6 +19,7 @@ val kotlinVersion: String by project
 val loomVersion: String by project
 val modPublishVersion: String by project
 
+
 dependencies {
     api(libs.loom)
     api(libs.legacy.looming)

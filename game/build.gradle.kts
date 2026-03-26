@@ -31,7 +31,7 @@ subprojects {
         add("include", add("api", "io.github.spair:imgui-java-natives-macos:$imguiVersion")!!)
 
         if (VersionNumber.parse(minecraftVersion.toString()) < VersionNumber.parse("1.14")) {
-            add("include", add("api", "com.github.Enaium:ImGui-LWJGL2:cea83431e3")!!)
+            add("include", add("api", "com.github.Enaium:ImGui-LWJGL2:e30f6b944c")!!)
         }
     }
 }

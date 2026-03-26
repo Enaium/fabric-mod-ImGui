@@ -41,10 +41,8 @@ public class MinecraftClientMixin {
         IMGUI.dispose();
     }
 
-    @Inject(method = "tick", at = @At(value = "HEAD"))
+    @Inject(method = "handleKeyInput", at = @At(value = "HEAD"))
     public void getEventKeyState(CallbackInfo ci) {
-        while (Keyboard.next()) {
-            DefaultImGui.imGuiDisplay.onKey();
-        }
+        DefaultImGui.imGuiDisplay.onKey();
     }
 }

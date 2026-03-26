@@ -18,7 +18,6 @@ package cn.enaium.fabric.imgui.mixin;
 
 import cn.enaium.fabric.imgui.DefaultImGui;
 import net.minecraft.client.MinecraftClient;
-import org.lwjgl.input.Keyboard;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -41,11 +40,8 @@ public class MinecraftClientMixin {
         IMGUI.dispose();
     }
 
-
-    @Inject(method = "tick", at = @At(value = "HEAD"))
+    @Inject(method = "handleKeyInput", at = @At(value = "HEAD"))
     public void getEventKeyState(CallbackInfo ci) {
-        while (Keyboard.next()) {
-            DefaultImGui.imGuiDisplay.onKey();
-        }
+        DefaultImGui.imGuiDisplay.onKey();
     }
 }
