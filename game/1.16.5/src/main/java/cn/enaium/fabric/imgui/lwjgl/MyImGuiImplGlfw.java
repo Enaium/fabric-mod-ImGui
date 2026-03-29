@@ -18,6 +18,7 @@ package cn.enaium.fabric.imgui.lwjgl;
 
 import imgui.glfw.ImGuiImplGlfw;
 import org.lwjgl.PointerBuffer;
+import org.lwjgl.Version;
 import org.lwjgl.system.MemoryUtil;
 
 import static org.lwjgl.glfw.GLFW.glfwGetError;
@@ -28,10 +29,14 @@ import static org.lwjgl.glfw.GLFW.glfwGetError;
 public class MyImGuiImplGlfw extends ImGuiImplGlfw {
     @Override
     protected void eatErrors() {
-        if (glfwHasGetError) {
-            final PointerBuffer pb = MemoryUtil.memAllocPointer(1);
-            glfwGetError(pb);
-            MemoryUtil.memFree(pb);
+        if (Version.getVersion().startsWith("3.2.")) {
+            if (glfwHasGetError) {
+                final PointerBuffer pb = MemoryUtil.memAllocPointer(1);
+                glfwGetError(pb);
+                MemoryUtil.memFree(pb);
+            }
+        } else {
+            super.eatErrors();
         }
     }
 }
