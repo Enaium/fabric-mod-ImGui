@@ -1,6 +1,7 @@
 rootProject.name = "fabric-gui-imgui"
 
 include(":core")
+include(":game:26.3")
 include(":game:26.2")
 include(":game:26.1")
 include(":game:1.21.11")

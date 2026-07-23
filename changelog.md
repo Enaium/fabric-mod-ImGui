@@ -1,3 +1,3 @@
 ## 🆕 Features
 
-- Vulkan backend support
+- SDL3 window support

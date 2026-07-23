@@ -16,10 +16,9 @@
 
 package cn.enaium.fabric.imgui.mixin;
 
-import cn.enaium.fabric.imgui.ImGuiRenderable;
-import net.minecraft.client.DeltaTracker;
+import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.main.GameConfig;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -32,16 +31,19 @@ import static cn.enaium.fabric.imgui.FabricImGui.IMGUI;
 /**
  * @author Enaium
  */
-@Mixin(GameRenderer.class)
-public class GameRendererMixin {
+@Mixin(Minecraft.class)
+public class MinecraftMixin {
     @Shadow
     @Final
-    private Minecraft minecraft;
+    private Window window;
 
-    @Inject(method = "render", at = @At("RETURN"))
-    private void render(DeltaTracker deltaTracker, boolean renderLevel, CallbackInfo ci) {
-        if (minecraft.gui.screen() instanceof final ImGuiRenderable renderable) {
-            IMGUI.draw(renderable);
-        }
+    @Inject(method = "<init>", at = @At("RETURN"))
+    public void initImGui(GameConfig gameConfig, CallbackInfo ci) {
+        IMGUI.create(window.handle());
+    }
+
+    @Inject(method = "close", at = @At("HEAD"))
+    public void closeImGui(CallbackInfo ci) {
+        IMGUI.dispose();
     }
 }

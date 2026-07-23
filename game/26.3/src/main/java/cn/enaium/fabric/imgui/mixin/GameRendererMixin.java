@@ -17,7 +17,6 @@
 package cn.enaium.fabric.imgui.mixin;
 
 import cn.enaium.fabric.imgui.ImGuiRenderable;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import org.spongepowered.asm.mixin.Final;
@@ -39,7 +38,7 @@ public class GameRendererMixin {
     private Minecraft minecraft;
 
     @Inject(method = "render", at = @At("RETURN"))
-    private void render(DeltaTracker deltaTracker, boolean renderLevel, CallbackInfo ci) {
+    private void render(CallbackInfo ci) {
         if (minecraft.gui.screen() instanceof final ImGuiRenderable renderable) {
             IMGUI.draw(renderable);
         }
