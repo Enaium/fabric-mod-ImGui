@@ -332,9 +332,8 @@ public class ImGuiImplBlaze3D {
                     continue;
                 }
 
-                // Vulkan framebuffer uses top-left origin (same as ImGui)
                 final int scissorX = (int) clipMinX;
-                final int scissorY = (int) clipMinY;
+                final int scissorY = (int) (fbHeight - clipMaxY);
                 final int scissorW = (int) (clipMaxX - clipMinX);
                 final int scissorH = (int) (clipMaxY - clipMinY);
 
