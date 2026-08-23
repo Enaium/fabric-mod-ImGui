@@ -32,7 +32,6 @@ import imgui.flag.ImGuiConfigFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.PreferredGraphicsApi;
 import org.jspecify.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11C;
@@ -48,23 +47,26 @@ import java.util.Optional;
  */
 public class DefaultImGui extends ImGuiService {
     public final ImGuiImplGlfw imGuiImplGlfw = new ImGuiImplGlfw();
-    public @Nullable ImGuiImplGl3 imGuiImplGl3;
-    public @Nullable ImGuiImplBlaze3D imGuiImplBlaze3D;
+    private @Nullable ImGuiImplGl3 imGuiImplGl3;
+    private @Nullable ImGuiImplBlaze3D imGuiImplBlaze3D;
 
     /**
      * @param id mod id
      */
     public DefaultImGui(String id) {
         super(id);
-        if (Minecraft.getInstance().options.preferredGraphicsBackend().get() != PreferredGraphicsApi.VULKAN) {
-            imGuiImplGl3 = new ImGuiImplGl3();
-        } else {
-            imGuiImplBlaze3D = new ImGuiImplBlaze3D();
-        }
     }
 
     @Override
     public void init(final long handle) {
+        // Choose the renderer by the actual active device, not the user preference:
+        // the game can fall back to OpenGL even when Vulkan is preferred.
+        if ("Vulkan".equals(RenderSystem.getDevice().getDeviceInfo().backendName())) {
+            imGuiImplBlaze3D = new ImGuiImplBlaze3D();
+        } else {
+            imGuiImplGl3 = new ImGuiImplGl3();
+        }
+
         imGuiImplGlfw.init(handle, true);
         if (imGuiImplGl3 != null) {
             imGuiImplGl3.init();

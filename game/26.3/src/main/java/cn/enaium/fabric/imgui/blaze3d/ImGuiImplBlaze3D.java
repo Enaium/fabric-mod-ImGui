@@ -79,17 +79,25 @@ public class ImGuiImplBlaze3D {
     public void newFrame() {
         if (renderPipeline == null) {
             createPipeline();
-        } else if (compiledPipeline == null || compiledPipeline.isClosed()) {
-            // Recompile pipeline if it was closed or failed to compile
-            LOGGER.warn("ImGui pipeline is invalid, recompiling...");
+        }
+        // Shaders are only resolvable once the initial resource reload has finished;
+        // keep retrying every frame instead of crashing or giving up
+        if (compiledPipeline == null || compiledPipeline.isClosed()) {
             compiledPipeline = RenderSystem.getCompiledPipelineNullable(renderPipeline);
-            if (compiledPipeline == null) {
-                LOGGER.error("Failed to recompile ImGui pipeline!");
-            }
+        }
+        if (!isReady()) {
+            return;
         }
         if (fontTexture == null) {
             createFontsTexture();
         }
+    }
+
+    /**
+     * @return true when the compiled pipeline is ready to render
+     */
+    private boolean isReady() {
+        return compiledPipeline != null && !compiledPipeline.isClosed() && projMatrixUniform != null;
     }
 
     private void createPipeline() {
@@ -283,6 +291,11 @@ public class ImGuiImplBlaze3D {
      * @param renderPass the active render pass to render into
      */
     public void renderDrawData(final ImDrawData drawData, final RenderPass renderPass) {
+        if (!isReady()) {
+            // Shaders are not available until the resource reload finishes; retry next frame
+            return;
+        }
+
         final int fbWidth = (int) (drawData.getDisplaySizeX() * drawData.getFramebufferScaleX());
         final int fbHeight = (int) (drawData.getDisplaySizeY() * drawData.getFramebufferScaleY());
         if (fbWidth <= 0 || fbHeight <= 0) {

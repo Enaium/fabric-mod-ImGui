@@ -26,6 +26,14 @@ import imgui.flag.ImGuiConfigFlags;
  */
 public abstract class ImGuiService {
     private final String id;
+    private boolean created;
+
+    /**
+     * @return true if {@link #create(long)} has completed
+     */
+    public boolean isCreated() {
+        return created;
+    }
 
     public ImGuiService() {
         this(null);
@@ -50,6 +58,7 @@ public abstract class ImGuiService {
         final ImGuiIO data = ImGui.getIO();
         configure(data);
         init(handle);
+        created = true;
     }
 
     public abstract void init(final long handle);
@@ -73,5 +82,6 @@ public abstract class ImGuiService {
     public void dispose() {
         ImPlot.destroyContext();
         ImGui.destroyContext();
+        created = false;
     }
 }

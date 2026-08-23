@@ -48,30 +48,31 @@ import java.util.Optional;
  */
 public class DefaultImGui extends ImGuiService {
     public static ImGuiImplSdl3 imGuiImplSdl3 = new ImGuiImplSdl3();
-    public @Nullable ImGuiImplGl3 imGuiImplGl3;
-    public @Nullable ImGuiImplBlaze3D imGuiImplBlaze3D;
+    private @Nullable ImGuiImplGl3 imGuiImplGl3;
+    private @Nullable ImGuiImplBlaze3D imGuiImplBlaze3D;
 
     /**
      * @param id mod id
      */
     public DefaultImGui(String id) {
         super(id);
-        if (Minecraft.getInstance().options.preferredGraphicsBackend().get() != PreferredGraphicsApi.VULKAN) {
-            imGuiImplGl3 = new ImGuiImplGl3();
-        } else {
-            imGuiImplBlaze3D = new ImGuiImplBlaze3D();
-        }
     }
 
     @Override
     public void init(final long handle) {
+        final GpuDevice device = RenderSystem.getDevice();
+        if ("Vulkan".equals(device.getDeviceInfo().backendName())) {
+            imGuiImplBlaze3D = new ImGuiImplBlaze3D();
+        } else {
+            imGuiImplGl3 = new ImGuiImplGl3();
+        }
+
         if (imGuiImplGl3 != null) {
             imGuiImplGl3.init();
             imGuiImplSdl3.initForOpenGL(handle, 0);
         } else if (imGuiImplBlaze3D != null) {
             imGuiImplSdl3.initForVulkan(handle);
         }
-        // ImGuiImplBlaze3D is lazily initialized in newFrame()
     }
 
     @Override

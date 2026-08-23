@@ -39,6 +39,9 @@ public class GameRendererMixin {
 
     @Inject(method = "render", at = @At("RETURN"))
     private void render(CallbackInfo ci) {
+        if (!IMGUI.isCreated()) {
+            return;
+        }
         if (minecraft.gui.screen() instanceof final ImGuiRenderable renderable) {
             IMGUI.draw(renderable);
         }

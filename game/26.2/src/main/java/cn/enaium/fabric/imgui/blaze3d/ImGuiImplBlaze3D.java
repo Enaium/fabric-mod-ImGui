@@ -84,15 +84,26 @@ public class ImGuiImplBlaze3D {
     public void newFrame() {
         if (renderPipeline == null) {
             createPipeline();
-        } else if (compiledPipeline != null && !compiledPipeline.isValid()) {
-            // Clear cached invalid pipeline and retry
-            LOGGER.warn("ImGui pipeline is invalid, clearing cache and recreating...");
-            RenderSystem.getDevice().clearPipelineCache();
-            createPipeline();
+        }
+        // Shaders are only available once the resource reload has finished; the
+        // first attempts yield an invalid pipeline — retry every frame instead of
+        // crashing or permanently caching the failure
+        if (compiledPipeline == null || !compiledPipeline.isValid()) {
+            compiledPipeline = RenderSystem.getDevice().precompilePipeline(renderPipeline);
+        }
+        if (!isReady()) {
+            return;
         }
         if (fontTexture == null) {
             createFontsTexture();
         }
+    }
+
+    /**
+     * @return true when the compiled pipeline is ready to render
+     */
+    private boolean isReady() {
+        return compiledPipeline != null && compiledPipeline.isValid() && projMatrixUniform != null;
     }
 
     private void createPipeline() {
@@ -120,11 +131,10 @@ public class ImGuiImplBlaze3D {
                         .build())
                 .build();
 
-        // Use custom shader source to bypass ShaderManager preprocessing
-        compiledPipeline = device.precompilePipeline(renderPipeline);
-
-        if (!compiledPipeline.isValid()) {
-            LOGGER.error("Failed to compile ImGui pipeline! Shaders may be missing from resources.");
+        // An invalid or missing result is expected while the resource reload is
+        // still running; newFrame() retries every frame until shaders are available
+        if (compiledPipeline == null || !compiledPipeline.isValid()) {
+            LOGGER.debug("ImGui pipeline not ready yet, will retry next frame");
         }
 
         // Recreate projection matrix uniform buffer (64 bytes for mat4 in std140 layout)
@@ -286,6 +296,11 @@ public class ImGuiImplBlaze3D {
      * @param renderPass the active render pass to render into
      */
     public void renderDrawData(final ImDrawData drawData, final RenderPass renderPass) {
+        if (!isReady() || fontTexture == null || vertexBuffer == null || indexBuffer == null) {
+            // Pipeline or buffers not ready yet (e.g. shaders still reloading); skip this frame
+            return;
+        }
+
         final int fbWidth = (int) (drawData.getDisplaySizeX() * drawData.getFramebufferScaleX());
         final int fbHeight = (int) (drawData.getDisplaySizeY() * drawData.getFramebufferScaleY());
         if (fbWidth <= 0 || fbHeight <= 0) {

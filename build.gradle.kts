@@ -3,13 +3,7 @@ allprojects {
     version = rootProject.property("version").toString()
 
     repositories {
-        mavenCentral {
-            metadataSources {
-                mavenPom()
-                artifact()
-                ignoreGradleMetadataRedirection()
-            }
-        }
+        mavenCentral()
         maven {
             name = "Fabric"
             url = uri("https://maven.fabricmc.net/")
