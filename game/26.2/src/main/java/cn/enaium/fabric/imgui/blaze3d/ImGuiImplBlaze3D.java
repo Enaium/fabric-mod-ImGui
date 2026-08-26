@@ -16,6 +16,8 @@
 
 package cn.enaium.fabric.imgui.blaze3d;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.mojang.blaze3d.GpuFormat;
 import com.mojang.blaze3d.IndexType;
 import com.mojang.blaze3d.PrimitiveTopology;
@@ -35,14 +37,20 @@ import imgui.ImFontAtlas;
 import imgui.ImGui;
 import imgui.ImVec4;
 import imgui.type.ImInt;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import net.minecraft.resources.Identifier;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.LinkedList;
 import java.util.OptionalDouble;
+import java.util.Queue;
 
 /**
  * ImGui renderer implementation using the Blaze3D GPU abstraction layer.
@@ -53,6 +61,7 @@ import java.util.OptionalDouble;
 public class ImGuiImplBlaze3D {
     private static final Logger LOGGER = LoggerFactory.getLogger(ImGuiImplBlaze3D.class);
     private static final Identifier IMGUI_SHADER_ID = Identifier.fromNamespaceAndPath("fabric-gui-imgui", "core/imgui");
+
 
     /**
      * ImDrawVert layout: pos(2f) + uv(2f) + col(4ub) = 20 bytes
@@ -77,6 +86,33 @@ public class ImGuiImplBlaze3D {
     private final ByteBuffer projMatrixBuffer = ByteBuffer.allocateDirect(64).order(ByteOrder.nativeOrder());
     private final ImVec4 reusableClipRect = new ImVec4();
 
+
+    private final BiMap<GpuTextureView, Long> textureBindings = HashBiMap.create();
+
+    private long nextTextureId = 2; // ImGui reserves 1 for font texture
+
+    /**
+     * Register a texture for use with ImGui and get its ID
+     * @param tex Texture object to use
+     * @return The new or existing ID.
+     */
+    public long textureId(@NonNull GpuTextureView tex) {
+        return textureBindings.computeIfAbsent(tex, _ -> nextTextureId++);
+    }
+
+    private boolean bindDrawTexture(RenderPass renderPass, long texId) {
+        GpuTextureView view;
+        GpuSampler sampler;
+        if (texId == 1) {
+            view = fontTextureView;
+        } else {
+            view = textureBindings.inverse().get(texId);
+            if (view == null) return false;
+        }
+        renderPass.bindTexture("Texture", view, fontSampler);
+        return true;
+    }
+
     /**
      * Ensures the rendering pipeline and font texture are ready for the current frame.
      * Must be called each frame before rendering.
@@ -97,6 +133,9 @@ public class ImGuiImplBlaze3D {
         if (fontTexture == null) {
             createFontsTexture();
         }
+
+        // Dispose of all stale textures
+        textureBindings.keySet().removeIf(GpuTextureView::isClosed);
     }
 
     /**
@@ -309,7 +348,7 @@ public class ImGuiImplBlaze3D {
 
         renderPass.setPipeline(renderPipeline);
         renderPass.setUniform("ProjMtx", projMatrixUniform);
-        renderPass.bindTexture("Texture", fontTextureView, fontSampler);
+//        renderPass.bindTexture("Texture", fontTextureView, fontSampler);
 
         final float clipOffX = drawData.getDisplayPosX();
         final float clipOffY = drawData.getDisplayPosY();
@@ -353,6 +392,11 @@ public class ImGuiImplBlaze3D {
                 final int scissorH = (int) (clipMaxY - clipMinY);
 
                 renderPass.enableScissor(scissorX, scissorY, scissorW, scissorH);
+
+                long texId = drawData.getCmdListCmdBufferTextureId(n, cmdI);
+                if (!bindDrawTexture(renderPass, texId)) {
+                    continue;
+                }
 
                 final int elemCount = drawData.getCmdListCmdBufferElemCount(n, cmdI);
                 final int idxBufferOffset = drawData.getCmdListCmdBufferIdxOffset(n, cmdI);
