@@ -16,8 +16,7 @@
 
 package cn.enaium.fabric.imgui.blaze3d;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
+import cn.enaium.fabric.imgui.TextureBinding;
 import com.mojang.blaze3d.GpuFormat;
 import com.mojang.blaze3d.IndexType;
 import com.mojang.blaze3d.PrimitiveTopology;
@@ -37,20 +36,14 @@ import imgui.ImFontAtlas;
 import imgui.ImGui;
 import imgui.ImVec4;
 import imgui.type.ImInt;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.objects.Object2LongMap;
-import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import net.minecraft.resources.Identifier;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.LinkedList;
 import java.util.OptionalDouble;
-import java.util.Queue;
 
 /**
  * ImGui renderer implementation using the Blaze3D GPU abstraction layer.
@@ -87,26 +80,13 @@ public class ImGuiImplBlaze3D {
     private final ImVec4 reusableClipRect = new ImVec4();
 
 
-    private final BiMap<GpuTextureView, Long> textureBindings = HashBiMap.create();
-
-    private long nextTextureId = 2; // ImGui reserves 1 for font texture
-
-    /**
-     * Register a texture for use with ImGui and get its ID
-     * @param tex Texture object to use
-     * @return The new or existing ID.
-     */
-    public long textureId(@NonNull GpuTextureView tex) {
-        return textureBindings.computeIfAbsent(tex, _ -> nextTextureId++);
-    }
-
     private boolean bindDrawTexture(RenderPass renderPass, long texId) {
         GpuTextureView view;
         GpuSampler sampler;
         if (texId == 1) {
             view = fontTextureView;
         } else {
-            view = textureBindings.inverse().get(texId);
+            view = TextureBinding.getBindings().inverse().get(texId);
             if (view == null) return false;
         }
         renderPass.bindTexture("Texture", view, fontSampler);
@@ -134,8 +114,7 @@ public class ImGuiImplBlaze3D {
             createFontsTexture();
         }
 
-        // Dispose of all stale textures
-        textureBindings.keySet().removeIf(GpuTextureView::isClosed);
+        TextureBinding.clearStale();
     }
 
     /**
