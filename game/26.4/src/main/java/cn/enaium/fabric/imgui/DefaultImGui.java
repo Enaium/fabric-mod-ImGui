@@ -25,7 +25,9 @@ import com.mojang.renderpearl.api.commands.CommandEncoder;
 import com.mojang.renderpearl.api.commands.RenderPass;
 import com.mojang.renderpearl.api.device.GpuDevice;
 import com.mojang.renderpearl.backend.api.GpuDeviceBackend;
-import com.mojang.renderpearl.backend.opengl.*;
+import com.mojang.renderpearl.backend.opengl.DirectStateAccess;
+import com.mojang.renderpearl.backend.opengl.FrameBufferAttachment;
+import com.mojang.renderpearl.backend.opengl.FrameBufferCache;
 import imgui.ImDrawData;
 import imgui.ImGui;
 import imgui.flag.ImGuiConfigFlags;
@@ -85,10 +87,11 @@ public class DefaultImGui extends ImGuiService {
         if (imGuiImplGl3 != null) {
             // OpenGL path: bind FBO, render ImGui, unbind FBO
             final GpuDeviceBackend backend = ((FrontendGpuDeviceMixin) RenderSystem.getDevice()).getBackend();
-            final DirectStateAccess directStateAccess = ((GlDeviceMixin) backend).getDirectStateAccess();
-            final FrameBufferCache frameBufferCache = ((GlDeviceMixin) backend).getFrameBufferCache();
-            final List<FrameBufferAttachment> colorTextures = Collections.singletonList((GlTexture) framebuffer.getColorTexture());
-            GlStateManager._glBindFramebuffer(GL30C.GL_FRAMEBUFFER, frameBufferCache.getFbo(directStateAccess, colorTextures, null));
+            final GlDeviceMixin glDevice = (GlDeviceMixin) backend;
+            final DirectStateAccess directStateAccess = glDevice.getDirectStateAccess();
+            final FrameBufferCache frameBufferCache = glDevice.getFrameBufferCache();
+            final List<FrameBufferAttachment> colorTextures = Collections.singletonList((FrameBufferAttachment) framebuffer.getColorTexture());
+            glDevice.getStateManager()._glBindFramebuffer(GL30C.GL_FRAMEBUFFER, frameBufferCache.getFbo(directStateAccess, colorTextures, null));
             GL11C.glViewport(0, 0, framebuffer.width, framebuffer.height);
 
             imGuiImplGl3.newFrame();
@@ -100,7 +103,7 @@ public class DefaultImGui extends ImGuiService {
             ImGui.render();
             imGuiImplGl3.renderDrawData(ImGui.getDrawData());
 
-            GlStateManager._glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
+            glDevice.getStateManager()._glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
         } else if (imGuiImplBlaze3D != null) {
             // Blaze3D path: use CommandEncoder and RenderPass for GPU-agnostic rendering
             imGuiImplBlaze3D.newFrame();

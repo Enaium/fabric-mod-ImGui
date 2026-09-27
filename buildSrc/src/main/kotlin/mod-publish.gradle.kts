@@ -24,6 +24,10 @@ afterEvaluate {
             projectId = "1423038"
             accessToken = providers.gradleProperty("curseforge.token")
             minecraftVersions.add(property("minecraft.version").toString())
+            // CurseForge requires at least one version of the environment group.
+            // The mod only renders ImGui on the client, so it is client-only.
+            clientRequired = true
+            serverRequired = false
         }
 
         modrinth {
